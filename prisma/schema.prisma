@@ -10,6 +10,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User{
-  id Int @id @default (autoincrement())
+model User {
+  id                       Int       @id @default(autoincrement())
+  rollnumber               String    @unique
+  email                    String    @unique
+  password                 String
+  isVerfied                Boolean   @default(false)
+  isAdmin                  Boolean   @default(false)
+  forgotPasswordToken      String?
+  forgotPasswordTokenExpiry DateTime?
+  verifyToken              String?
+  verifyTokenExpiry        DateTime?
+
+  // Define the relationship with the Post model (if applicable)
+  // posts                    Post[]
 }
