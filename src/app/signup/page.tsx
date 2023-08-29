@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { Axios } from "axios";
 
 function SignUp() {
   const [data, setData] = useState({
@@ -15,18 +16,18 @@ function SignUp() {
   const router = useRouter();
 
   const handleSubmit = async (e: any) => {
-    e.preventDefault();
+    // e.preventDefault();
 
-    // Send registration data to your API endpoint
-    const response = await fetch("/api/auth/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
+    // // Send registration data to your API endpoint
+    // const response = await fetch("/api/auth/register", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify(data),
+    // });
 
-    router.push("/api/auth/signin");
+    // router.push("/api/auth/signin");
   };
 
   return (
