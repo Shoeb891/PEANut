@@ -8,7 +8,7 @@ export async function POST(request:NextRequest) {
     try {
         
         const reqbody = await request.json();
-        const {rollnumber,email,password} = reqbody;
+        const {name,rollnumber,email,password} = reqbody;
         const salt = await bcryptjs.genSalt(10)
         const hashedPassword = await bcryptjs.hash(password, salt)
         console.log(reqbody);
