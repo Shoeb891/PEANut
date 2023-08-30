@@ -12,11 +12,12 @@ datasource db {
 
 model User {
   id                       Int       @id @default(autoincrement())
+  name                     String    
   rollnumber               String    @unique
   email                    String    @unique
   password                 String
-  isVerfied                Boolean   @default(false)
-  isAdmin                  Boolean   @default(false)
+  isVerfied                Boolean?
+  isAdmin                  Boolean?  
   forgotPasswordToken      String?
   forgotPasswordTokenExpiry DateTime?
   verifyToken              String?
