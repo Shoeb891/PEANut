@@ -9,7 +9,8 @@ export async function POST(request:NextRequest) {
         
         const reqbody = await request.json();
         const {rollnumber,email,password} = reqbody;
-
+        const salt = await bcryptjs.genSalt(10)
+        const hashedPassword = await bcryptjs.hash(password, salt)
         console.log(reqbody);
 
         const existingUser = await prisma.user.findFirst({
@@ -25,8 +26,7 @@ export async function POST(request:NextRequest) {
             );
         }
         
-        const salt = await bcryptjs.genSalt(10)
-        const hashedPassword = await bcryptjs.hash(password, salt)
+        
 
         const newUser = await prisma.user.create({
             data:{
@@ -35,7 +35,7 @@ export async function POST(request:NextRequest) {
                 password:hashedPassword
             },
         });
-
+        
         return NextResponse.json({ message: "User created Successfully!", success:true });
 
         

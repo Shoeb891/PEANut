@@ -1,45 +1,62 @@
 "use client";
 
-import { useState } from "react";
+import Link from "next/link";
+import React, {useEffect} from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Axios } from "axios";
+import axios from "axios";
 
-function SignUp() {
-  const [data, setData] = useState({
+export default function SignUp() {
+  const router = useRouter();
+  const [data, setData] = React.useState({
     name: "",
     rollNumber: "",
     email: "",
     password: "",
   });
 
-  const router = useRouter();
+  const [loading, setLoading] = React.useState(false);
 
-  const handleSubmit = async (e: any) => {
-    // e.preventDefault();
 
-    // // Send registration data to your API endpoint
-    // const response = await fetch("/api/auth/register", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify(data),
-    // });
+  const onSignup = async () => {
+    try {
+        if(data.email.length > 0 && data.password.length > 0 && data.rollNumber.length > 0) {
+            setLoading(false);
+        } else {
+            setLoading(true);
+        }
 
-    // router.push("/api/auth/signin");
+        const response = await axios.post("/api/users/signup",data);
+        console.log("Signup success", response.data);
+        router.push("/login");
+
+        // const response = await fetch("/api/users/signup", {
+        //   method: "POST",
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //   },
+        //   body: JSON.stringify(data),
+        // });
+    
+        // router.push("/api/users/login");
+
+    } catch (error:any) {
+        console.log("Signup failed", error.data);
+    }finally{
+         setLoading(false);
+     }
   };
 
   return (
     <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900 dark:text-white">
-          Create a new account
+          {loading ? "Creating a new account" : "Create a new account"}
         </h2>
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form className="space-y-6">
           <div>
             <label
               htmlFor="name"
@@ -91,10 +108,10 @@ function SignUp() {
             </label>
             <div className="mt-2">
               <input
-                id="email"
-                name="email"
+                id="rollNumber"
+                name="rollNumber"
                 type="text"
-                autoComplete="email"
+                autoComplete="rollNumber"
                 placeholder="Enter roll number"
                 required
                 value={data.rollNumber}
@@ -133,6 +150,7 @@ function SignUp() {
 
           <div>
             <Button
+              onClick={onSignup}
               type="submit"
               className="flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6 text-white dark:text-black shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
             >
@@ -151,6 +169,4 @@ function SignUp() {
       </div>
     </div>
   );
-}
-
-export default SignUp;
+            }
