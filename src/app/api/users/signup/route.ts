@@ -8,7 +8,7 @@ export async function POST(request:NextRequest) {
     try {
         
         const reqbody = await request.json();
-        const {name,rollnumber,email,password} = reqbody;
+        const {rollnumber,email,password} = reqbody;
         const salt = await bcryptjs.genSalt(10)
         const hashedPassword = await bcryptjs.hash(password, salt)
         console.log(reqbody);
@@ -30,7 +30,6 @@ export async function POST(request:NextRequest) {
 
         const newUser = await prisma.user.create({
             data:{
-                name,
                 rollnumber,
                 email,
                 password:hashedPassword
@@ -46,4 +45,3 @@ export async function POST(request:NextRequest) {
     }
     
 }
-
