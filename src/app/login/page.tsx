@@ -3,34 +3,45 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import axios from "axios";
+import { toast } from "react-hot-toast";
 import Link from "next/link";
 
 
 
 function LogIn() {
     const [data, setData] = useState({
-      rollNumber: "",
+      rollnumber: "",
       password: "",
     });
   
     const router = useRouter();
+    const [loading, setLoading] = useState(false);
+
   
     // const { data: session } = useSession();
   
     const handleSubmit = async (e: any) => {
-    //   e.preventDefault();
-    //   signIn("credentials", {
-    //     ...data,
-    //     redirect: false,
-    //   });
-    //   router.push("/dashboard");
-    };
+      e.preventDefault();
+      try {
+        setLoading(true);
+        const response = await axios.post("/api/users/login", data);
+        console.log("Login success", response.data);
+        toast.success("Login success");
+        router.push("/profile");
+    } catch (error:any) {
+        console.log("Login failed", error.message);
+        toast.error(error.message);
+    } finally{
+    setLoading(false);
+    }
+};
   
     return (
       <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900 dark:text-white">
-            Log In to your account
+            {loading ? "Processing" : "Log In to your account"}
           </h2>
         </div>
   
@@ -38,7 +49,7 @@ function LogIn() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label
-                htmlFor="rollNumber"
+                htmlFor="rollnumber"
                 className="block text-sm font-medium leading-6 text-gray-900 dark:text-white"
               >
                 Roll Number
@@ -51,9 +62,9 @@ function LogIn() {
                   autoComplete="email"
                   placeholder="Enter roll number"
                   required
-                  value={data.rollNumber}
+                  value={data.rollnumber}
                   onChange={(e) =>
-                    setData({ ...data, rollNumber: e.target.value })
+                    setData({ ...data, rollnumber: e.target.value })
                   }
                   className="block w-full rounded-md border-0 py-1.5 px-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
@@ -112,5 +123,5 @@ function LogIn() {
         </div>
       </div>
     );
-                }
+  }
   export default LogIn;

@@ -1,16 +1,17 @@
 import { PrismaClient } from "@prisma/client";
 import { NextResponse, NextRequest } from "next/server";
-import bcryptjs from "bcryptjs";
+import bcryptjs, { compare } from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 const prisma = new PrismaClient();
 
 export async function POST(request:NextRequest) {
     try {
-        const reqbody = request.json();
+        const reqbody = await request.json();
         const {rollnumber, password}  = reqbody;
         console.log(reqbody);
 
-        const user = await prisma.user.findOne(
+        const user = await prisma.user.findFirst(
             {
                 where:{rollnumber}
             }
@@ -22,6 +23,34 @@ export async function POST(request:NextRequest) {
 
         console.log("User exists")
         
+        const validPassword = await bcryptjs.compare
+        (password, user.password);
+
+        if(!validPassword){
+            return NextResponse.json({error:"Invalid Password"}, {status:400});
+        }
+        console.log(user);
+
+        //creating token data
+
+        const tokenData = {
+            id: user.id,
+            username: user.rollnumber,
+            email: user.email
+        }
+
+        const token = await jwt.sign(tokenData, process.env.TOKEN_SECRET!, {expiresIn: "1d"})
+
+        const response = NextResponse.json({
+            message: "Login successful",
+            success: true,
+        })
+        response.cookies.set("token", token, {
+            httpOnly: true, 
+            
+        })
+        return response;
+
     } catch (error:any) {
         return NextResponse.json({error: error.message},{status:500});
         }
