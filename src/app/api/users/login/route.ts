@@ -23,6 +23,8 @@ export async function POST(request:NextRequest) {
 
         console.log("User exists")
         
+        // @ts-ignore: Object is possibly 'null'.
+
         const validPassword = await bcryptjs.compare
         (password, user.password);
 
