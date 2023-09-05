@@ -26,3 +26,18 @@ model User {
   // Define the relationship with the Post model (if applicable)
   // posts                    Post[]
 }
+
+model Faculty{
+  id                       Int       @id @default(autoincrement())
+  name                     String    
+  department               String    
+  designation              String
+  email                    String    @unique
+  password                 String
+  isVerfied                Boolean   @default(false)
+  isFaculty                  Boolean   @default(true) 
+  forgotPasswordToken      String?
+  forgotPasswordTokenExpiry DateTime?
+  verifyToken              String?
+  verifyTokenExpiry        DateTime?
+}
