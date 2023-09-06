@@ -22,9 +22,7 @@ model User {
   forgotPasswordTokenExpiry DateTime?
   verifyToken              String?
   verifyTokenExpiry        DateTime?
-
-  // Define the relationship with the Post model (if applicable)
-  // posts                    Post[]
+  role                     String    @default("student") 
 }
 
 model Faculty{
@@ -35,9 +33,10 @@ model Faculty{
   email                    String    @unique
   password                 String
   isVerfied                Boolean   @default(false)
-  isFaculty                  Boolean   @default(true) 
   forgotPasswordToken      String?
   forgotPasswordTokenExpiry DateTime?
   verifyToken              String?
   verifyTokenExpiry        DateTime?
+  role                     String    @default("faculty") 
+
 }

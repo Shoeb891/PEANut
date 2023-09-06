@@ -32,7 +32,7 @@ function SignUp() {
     
       const response = await axios.post("/api/users/signup", data);
       console.log("Signup success", response.data);
-      router.push("/login");
+      router.push("/student/login");
       
   } catch (error:any) {
       console.log("Signup failed", error.message);

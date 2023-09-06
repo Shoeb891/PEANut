@@ -23,7 +23,7 @@ function LogIn() {
       e.preventDefault();
       try {
         setLoading(true);
-        const response = await axios.post("/api/Faculty/Login", data);
+        const response = await axios.post("/api/Faculty/profile", data);
         console.log("Login success", response.data);
         toast.success("Login success");
         router.push("/");

@@ -112,7 +112,7 @@ function LogIn() {
               </Button>
               <div className=" py-3 text-sm">
                 <Link
-                  href="/signup"
+                  href="/student/signup"
                   className="font-semibold text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
                 >
                   {"Don't have an account? Register"}

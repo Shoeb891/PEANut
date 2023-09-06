@@ -5,27 +5,29 @@ export function middleware(request: NextRequest) {
 
     const path = request.nextUrl.pathname;
 
-    const isPublicPath = path === '/login' || path === '/signup' || path === '/Faculty/Login' || path === '/Faculty/Signup'
+    const isPublicPath = path === '/' || path === '/student/login' || path === '/student/signup' || path === '/Faculty/Login' || path === '/Faculty/Signup'
 
     const token = request.cookies.get('token')?.value || ''
 
     if (isPublicPath && token) {
-        return NextResponse.redirect(new URL('/', request.nextUrl))
+        return NextResponse.redirect(new URL('/student/profile', request.nextUrl))
     }
 
     if (!isPublicPath && !token) {
-        return NextResponse.redirect(new URL('/login', request.nextUrl))
+        return NextResponse.redirect(new URL('/', request.nextUrl))
     }
+    
 }
 
 export const config = {
     matcher: [
         '/',
-        '/profile',
-        '/login',
-        '/signup',
+        '/Faculty/profile',
+        '/student/login',
+        '/student/signup',
         "/profile/(.*)",
         "/Faculty/Login",
-        "/Faculty/Signup"
+        "/Faculty/Signup",
+        "/stdent/profile"
     ],
 }

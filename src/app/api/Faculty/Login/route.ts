@@ -38,7 +38,8 @@ export async function POST(request:NextRequest) {
         const tokenData = {
             id: faculty.id,
             facultyname: faculty.email,
-            email: faculty.email
+            email: faculty.email,
+            role: faculty.role
         }
 
         const token = await jwt.sign(tokenData, process.env.TOKEN_SECRET!, {expiresIn: "1d"})
