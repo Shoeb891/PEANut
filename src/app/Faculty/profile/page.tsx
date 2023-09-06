@@ -13,7 +13,7 @@ export default function Profile() {
         try {
             await axios.get('/api/Faculty/Logout')
             toast.success('Logout successful')
-            router.push('/student/login')
+            router.push('/Faculty/Login')
 
         } catch (error: any) {
             console.log(error.message)
