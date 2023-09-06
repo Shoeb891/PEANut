@@ -5,56 +5,56 @@ import jwt from "jsonwebtoken";
 
 const prisma = new PrismaClient();
 
-export async function POST(request:NextRequest) {
-    try {
-        const reqbody = await request.json();
-        const {email, password}  = reqbody;
-        console.log(reqbody);
+export async function POST(request: NextRequest) {
+  try {
+    const reqbody = await request.json();
+    const { email, password } = reqbody;
+    console.log(reqbody);
 
-        const faculty = await prisma.faculty.findFirst(
-            {
-                where:{email}
-            }
-        );
+    const faculty = await prisma.faculty.findFirst({
+      where: { email },
+    });
 
-        if(!email){
-            return NextResponse.json({error:"faculty doesn't exist"},{status:400});
-        }
+    if (!email) {
+      return NextResponse.json(
+        { error: "faculty doesn't exist" },
+        { status: 400 }
+      );
+    }
 
-        console.log("faculty exists")
-        
-        // @ts-ignore: Object is possibly 'null'.
+    console.log("faculty exists");
 
-        const validPassword = await bcryptjs.compare
-        (password, faculty.password);
+    // @ts-ignore: Object is possibly 'null'.
 
-        if(!validPassword){
-            return NextResponse.json({error:"Invalid Password"}, {status:400});
-        }
-        console.log(faculty);
+    const validPassword = await bcryptjs.compare(password, faculty.password);
 
-        //creating token data
+    if (!validPassword) {
+      return NextResponse.json({ error: "Invalid Password" }, { status: 400 });
+    }
+    console.log(faculty);
 
-        const tokenData = {
-            id: faculty.id,
-            facultyname: faculty.email,
-            email: faculty.email,
-            role: faculty.role
-        }
+    //creating token data
 
-        const token = await jwt.sign(tokenData, process.env.TOKEN_SECRET!, {expiresIn: "1d"})
+    const tokenData = {
+      id: faculty.id,
+      facultyname: faculty.email,
+      email: faculty.email,
+      role: faculty.role,
+    };
 
-        const response = NextResponse.json({
-            message: "Login successful",
-            success: true,
-        })
-        response.cookies.set("token", token, {
-            httpOnly: true, 
-            
-        })
-        return response;
+    const token = await jwt.sign(tokenData, process.env.TOKEN_SECRET!, {
+      expiresIn: "1d",
+    });
 
-    } catch (error:any) {
-        return NextResponse.json({error: error.message},{status:500});
-        }
+    const response = NextResponse.json({
+      message: "Login successful",
+      success: true,
+    });
+    response.cookies.set("token", token, {
+      httpOnly: true,
+    });
+    return response;
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 }
