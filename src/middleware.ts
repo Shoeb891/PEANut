@@ -12,9 +12,9 @@ export async function middleware(request: NextRequest) {
 
   const userRole = await verifyJwtToken(token);
 
-  console.log('Path:', path);
-  console.log('Is Public Path:', isPublicPath);
-  console.log('User Role:', userRole);
+  // console.log('Path:', path);
+  // console.log('Is Public Path:', isPublicPath);
+  // console.log('User Role:', userRole);
 
   if (token && isPublicPath) {
     if (userRole === 'student') {
