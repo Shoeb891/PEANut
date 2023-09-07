@@ -11,9 +11,9 @@ export default function Profile() {
 
     const logout = async () => {
         try {
-            await axios.get('/api/Faculty/Logout')
+            await axios.get('/api/users/logout')
             toast.success('Logout successful')
-            router.push('/Faculty/Login')
+            router.push('/student/login')
 
         } catch (error: any) {
             console.log(error.message)
@@ -25,7 +25,7 @@ export default function Profile() {
     return (
         <button
             onClick={logout}
-            className="bg-red-500 mt-4 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+            className="bg-blue-500 mt-4 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
         >Logout</button>
     )
 }
