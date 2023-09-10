@@ -5,31 +5,33 @@ import jwt from "jsonwebtoken";
 
 const prisma = new PrismaClient();
 
-export async function POST(request:NextRequest) {
+export async function POST(request: NextRequest) {
     try {
         const reqbody = await request.json();
-        const {rollnumber, password}  = reqbody;
+        const { rollnumber, password } = reqbody;
         console.log(reqbody);
 
         const user = await prisma.user.findFirst(
             {
-                where:{rollnumber}
+                where: { rollnumber }
             }
         );
 
-        if(!rollnumber){
-            return NextResponse.json({error:"User doesn't exist"},{status:400});
+        if (!rollnumber) {
+            return NextResponse.json({ error: "User doesn't exist" }, { status: 400 });
         }
 
         console.log("User exists")
-        
+
         // @ts-ignore: Object is possibly 'null'.
+        if (user) {
+            const validPassword = await bcryptjs.compare
+                (password, user.password);
 
-        const validPassword = await bcryptjs.compare
-        (password, user.password);
+            if (!validPassword) {
+                return NextResponse.json({ error: "Invalid Password" }, { status: 400 });
+            }
 
-        if(!validPassword){
-            return NextResponse.json({error:"Invalid Password"}, {status:400});
         }
         console.log(user);
 
@@ -42,19 +44,19 @@ export async function POST(request:NextRequest) {
             role: user?.role
         }
 
-        const token = await jwt.sign(tokenData, process.env.TOKEN_SECRET!, {expiresIn: "1d"})
+        const token = await jwt.sign(tokenData, process.env.TOKEN_SECRET!, { expiresIn: "1d" })
 
         const response = NextResponse.json({
             message: "Login successful",
             success: true,
         })
         response.cookies.set("token", token, {
-            httpOnly: true, 
-            
+            httpOnly: true,
+
         })
         return response;
 
-    } catch (error:any) {
-        return NextResponse.json({error: error.message},{status:500});
-        }
+    } catch (error: any) {
+        return NextResponse.json({ error: error.message }, { status: 500 });
+    }
 }
