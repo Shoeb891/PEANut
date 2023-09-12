@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import {deleteCookie}from "cookies-next"
+import { deleteCookie } from "cookies-next"
 
 export async function GET() {
     try {
