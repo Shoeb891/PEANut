@@ -1,7 +1,7 @@
-// import { NextResponse, NextRequest } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 // import { verifyJwtToken } from './lib/auth';
 
-// export async function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
 //   const path = request.nextUrl.pathname;
 
 //   const publicPaths = ['/', '/student/login', '/student/signup', '/Faculty/Login', '/Faculty/Signup'];
@@ -36,8 +36,8 @@
 //     }
 //   }
 
-//   return NextResponse.next();
-// }
+  return NextResponse.next();
+}
 
 // export const config = {
 //   matcher: [
