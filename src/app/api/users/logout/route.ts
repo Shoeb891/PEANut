@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-export async function GET() {
+export async function POST() {
     try {
 
         const response = NextResponse.json(
@@ -12,7 +12,7 @@ export async function GET() {
 
         response.cookies.set("token", "",
             {
-                httpOnly: true, 
+                httpOnly: true,
                 expires: new Date(0)
             });
 
