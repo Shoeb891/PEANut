@@ -1,6 +1,5 @@
 import nodemailer from 'nodemailer';
 import bcryptjs from 'bcryptjs';
-import { v4 as uuidv4 } from 'uuid';
 import { PrismaClient } from '@prisma/client';
 
 const primsa = new PrismaClient();
@@ -8,8 +7,7 @@ const primsa = new PrismaClient();
 export const sendEmail = async ({ email, emailType, userId }: any) => {
     try {
 
-        const randomUUID = uuidv4();
-        const hashedToken = await bcryptjs.hash(randomUUID, 10);
+        const hashedToken = await bcryptjs.hash(userId.toString(), 10);
 
         if (emailType === "VERIFY") {
 
@@ -32,14 +30,14 @@ export const sendEmail = async ({ email, emailType, userId }: any) => {
             });
         }
 
-        var transporter = nodemailer.createTransport({
+        var transport = nodemailer.createTransport({
             host: "sandbox.smtp.mailtrap.io",
             port: 2525,
             auth: {
-                user: "afceab3647b065",
-                pass: "432581b3b3109b"
+              user: "afceab3647b065",
+              pass: "432581b3b3109b"
             }
-        });
+          });
 
         const mailOptions = {
             from: 'peanut21092003@gmail.com',
@@ -49,7 +47,7 @@ export const sendEmail = async ({ email, emailType, userId }: any) => {
                     or copy and paste the link below in your browser.<br>${process.env.DOMAIN}${emailType === "RESET" ? "/resetpassword" : "/verifyemail"}?token=${hashedToken}</p>`,
         };
 
-        const mailresponse = await transporter.sendMail(mailOptions);
+        const mailresponse = await transport.sendMail(mailOptions);
         console.log(mailresponse);
 
         return mailresponse;
