@@ -1,42 +1,139 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url  	    = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL_UNPOOLED")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([provider, providerAccountId])
+
+  @@index([userId], map: "account_userId_idx")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId], map: "session_userId_idx")
 }
 
 model User {
-  id                       Int       @id @default(autoincrement())
-  name                     String    
-  rollnumber               String    @unique
-  email                    String    @unique
-  password                 String
-  isVerfied                Boolean   @default(false)
-  isAdmin                  Boolean   @default(false) 
+  id            String    @id @default(cuid())
+  rollNumber    String    @unique
+  name          String
+  email         String    @unique
+  password      String    // Added password field
+  department    String
+  Section       String
+  emailVerified DateTime?
+  image         String?
+  quizzes       Quiz[]
+  accounts      Account[]
+  sessions      Session[]
   forgotPasswordToken      String?
   forgotPasswordTokenExpiry DateTime?
   verifyToken              String?
   verifyTokenExpiry        DateTime?
-  role                     String    @default("student") 
+  role          String    @default("student")
 }
 
-model Faculty{
-  id                       Int       @id @default(autoincrement())
-  name                     String    
-  department               String    
-  designation              String
-  email                    String    @unique
-  password                 String
-  isVerfied                Boolean   @default(false)
+model Faculty {
+  id            String    @id @default(cuid())
+  name          String
+  email         String    @unique
+  password      String    // Added password field
+  department    String
+  designation   String
   forgotPasswordToken      String?
   forgotPasswordTokenExpiry DateTime?
   verifyToken              String?
   verifyTokenExpiry        DateTime?
-  role                     String    @default("faculty") 
+  role          String    @default("faculty")
+}
 
+enum QuizType {
+  mcq
+  open_ended
+}
+
+model Quiz {
+  id            String    @id @default(cuid())
+  userId        String
+  timeStarted   DateTime
+  topic         String
+  timeEnded     DateTime?
+  author        String
+  quizType      QuizType?
+  user          User[]
+  questions     Question[]
+  problems      Code[]
+  @@index([userId], map: "quiz_userId_idx")
+}
+
+model Question {
+  id            String    @id @default(cuid())
+  question      String    @db.Text
+  answer        String
+  quizId        String
+  quizName      String
+  options       Json?
+  quiz          Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  percentageCorrect Float?
+  isCorrect     Boolean?
+  questionType  QuizType
+  userAnswer    String?
+
+  @@index([quizId], map: "question_quizId_idx")
+}
+
+model Code {
+  id                String    @id @default(cuid())
+  problemName       String
+  problemStatement  String    @db.Text
+  tags              String?
+  testCases         Json
+  expectedOutput    String
+  difficulty        String
+  language          Json
+  userAnswer        String?
+  answerStatus      String?
+  quizId            String?
+  quiz              Quiz?      @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  submissions       Submission[]
+  createdAt         DateTime  @default(now())
+
+  @@index([quizId], map: "code_quizId_idx")
+}
+
+model Submission {
+  id                String    @id @default(cuid())
+  codeId            String
+  code              Code      @relation(fields: [codeId], references: [id], onDelete: Cascade)
+  userId            String
+  submittedAt       DateTime  @default(now())
+  status            String
+  runtime           Float?
+  memory            Float?
+  language          String
+
+  @@index([codeId], map: "submission_codeId_idx")
 }

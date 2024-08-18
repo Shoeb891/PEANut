@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { toast } from "react-hot-toast";
 
 function SignUp() {
-  
   const router = useRouter();
 
   const [data, setData] = useState({
@@ -18,38 +17,38 @@ function SignUp() {
     password: "",
   });
 
-  
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
     try {
-      if(data.email.length > 0 && data.password.length > 0 && data.department.length > 0) {
+      if (
+        data.email.length > 0 &&
+        data.password.length > 0 &&
+        data.department.length > 0
+      ) {
         setLoading(true);
-    } else {
+      } else {
         setLoading(false);
-    }
-    
-      const response = await axios.post("/api/Faculty/Signup", data);
-      console.log("Signup success", response.data);
-      router.push("/Faculty/Login");
-      
-  } catch (error:any) {
-      console.log("Signup failed", error.message);
-      toast.error(error.message);
+      }
 
-      
-  }finally {
+      const response = await axios.post("/api/faculty/signup", data);
+      console.log("signup success", response.data);
+      router.push("/faculty/login");
+    } catch (error: any) {
+      console.log("signup failed", error.message);
+      toast.error(error.message);
+    } finally {
       setLoading(false);
-  }
+    }
   };
 
   return (
     <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900 dark:text-white">
-        {loading ? "Creating a new account" : "Create a new account"}
+          {loading ? "Creating a new account" : "Create a new account"}
         </h2>
       </div>
 
@@ -178,7 +177,7 @@ function SignUp() {
             </Button>
             <div className="text-sm py-2">
               <a
-                href="/api/Faculty/Login"
+                href="/api/faculty/login"
                 className="font-semibold text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
               >
                 Already have an account? Sign in
